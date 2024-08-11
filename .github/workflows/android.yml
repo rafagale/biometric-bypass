@@ -1,0 +1,83 @@
+name: Android CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Set Version and Commit
+        id: set_version
+        run: |
+          set -x  # Enable debug mode
+          APP_VER_NAME=$(date -u '+%d.%m.%y-%H%M')
+          APP_VER_CODE=$(date -u '+%y%m%d%H%M' | cut -c1-9)
+          echo "APP_VER_NAME=${APP_VER_NAME}" >> $GITHUB_ENV
+          echo "APP_VER_CODE=${APP_VER_CODE}" >> $GITHUB_ENV
+          echo "::set-output name=app_ver_name::${APP_VER_NAME}"
+          echo "::set-output name=app_ver_code::${APP_VER_CODE}"
+          sed -i "s/^appVerName=.*/appVerName=${APP_VER_NAME}/" gradle.properties
+          sed -i "s/^appVerCode=.*/appVerCode=${APP_VER_CODE}/" gradle.properties
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          if ! git diff --quiet; then
+            git commit -am "Update version to ${APP_VER_NAME}"
+            git push origin master
+          fi
+          set +x  # Disable debug mode
+
+      - name: Build with Gradle
+        run: |
+          set -x  # Enable debug mode
+          ./gradlew assembleDebug --stacktrace --debug
+          set +x  # Disable debug mode
+
+      - name: Locate APK
+        id: locate_apk
+        run: |
+          set -x  # Enable debug mode
+          APK_PATH=$(find app/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          echo "APK_PATH=${APK_PATH}" >> $GITHUB_ENV
+          echo "::set-output name=apk_path::${APK_PATH}"
+          set +x  # Disable debug mode
+
+      - name: Upload APK as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: debug-apk
+          path: ${{ steps.locate_apk.outputs.apk_path }}
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.set_version.outputs.app_ver_name }}
+          release_name: "Release ${{ steps.set_version.outputs.app_ver_name }}"
+          body: "Automatically generated release for version ${{ steps.set_version.outputs.app_ver_name }}"
+          draft: false
+          prerelease: false
+
+      - name: Upload APK to GitHub Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.locate_apk.outputs.apk_path }}
+          asset_name: "biometricbypass-${{ steps.set_version.outputs.app_ver_name }}.apk"
+          asset_content_type: application/vnd.android.package-archive
