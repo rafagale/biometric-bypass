@@ -13,24 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
 
       - name: Set Version and Commit
         id: set_version
         run: |
           set -x  # Enable debug mode
-          APP_VER_NAME=$(date -u '+%d.%m.%y-%H%M')
-          APP_VER_CODE=$(date -u '+%y%m%d%H%M' | cut -c1-9)
+          APP_VER_NAME=$(date -u '+%d.%m.%y')
+          APP_VER_CODE=$(date -u '+%y%m%d')
           echo "APP_VER_NAME=${APP_VER_NAME}" >> $GITHUB_ENV
           echo "APP_VER_CODE=${APP_VER_CODE}" >> $GITHUB_ENV
           echo "::set-output name=app_ver_name::${APP_VER_NAME}"
           echo "::set-output name=app_ver_code::${APP_VER_CODE}"
-          sed -i "s/^appVerName=.*/appVerName=${APP_VER_NAME}/" gradle.properties
-          sed -i "s/^appVerCode=.*/appVerCode=${APP_VER_CODE}/" gradle.properties
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           if ! git diff --quiet; then
@@ -42,7 +40,9 @@ jobs:
       - name: Build with Gradle
         run: |
           set -x  # Enable debug mode
-          ./gradlew assembleDebug --stacktrace --debug
+          ./gradlew assembleDebug --stacktrace --debug \
+            -PversionName=${{ steps.set_version.outputs.app_ver_name }} \
+            -PversionCode=${{ steps.set_version.outputs.app_ver_code }}
           set +x  # Disable debug mode
 
       - name: Locate APK
