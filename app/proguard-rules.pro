@@ -1,23 +1,37 @@
-# Keep Xposed classes and methods
--keep class * implements de.robv.android.xposed.IXposedHookLoadPackage {
-    *;
+# Xposed
+-adaptresourcefilecontents META-INF/xposed/java_init.list
+-keepattributes RuntimeVisibleAnnotations
+-keep,allowobfuscation,allowoptimization public class * extends io.github.libxposed.api.XposedModule {
+    public <init>(...);
+    public void onPackageLoaded(...);
+    public void onSystemServerLoaded(...);
+}
+-keep,allowoptimization,allowobfuscation @io.github.libxposed.api.annotations.* class * {
+    <fields>;
+    <methods>;
 }
 
--keepclassmembers class * implements de.robv.android.xposed.IXposedHookLoadPackage {
-    public *;
+# Reflection-Based Keep Rules
+-keepclassmembers class * {
+    @io.github.libxposed.api.annotations.* *;
 }
 
--keepclasseswithmembers class * {
-    public void handleLoadPackage(de.robv.android.xposed.callbacks.XC_LoadPackage$LoadPackageParam);
+# Kotlin
+-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+    public static void check*(...);
+    public static void throw*(...);
+}
+-assumenosideeffects class java.util.Objects {
+    public static ** requireNonNull(...);
 }
 
-# Optionally, keep line numbers for easier debugging
--keepattributes SourceFile,LineNumberTable
+# Strip debug log
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
+}
 
-# Optionally, keep WebView JavaScript interface methods
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Obfuscation
+-repackageclasses
+-allowaccessmodification
 
-# Optionally, disable ProGuard optimization
-#-dontoptimize
