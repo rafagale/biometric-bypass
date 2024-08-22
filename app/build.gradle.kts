@@ -3,13 +3,14 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.agp.app)
+    alias(libs.plugins.kotlin)
 }
 
 android {
     namespace = "es.rafagale.biometricbypass"
     compileSdk = 34
+    buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "es.rafagale.biometricbypass"
@@ -18,31 +19,59 @@ android {
 
         versionCode = project.findProperty("versionCode")?.toString()?.toInt() ?: generateVersionCode()
         versionName = project.findProperty("versionName")?.toString() ?: generateVersionName()
+
+        multiDexEnabled = true
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs["debug"]
         }
+        debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
+        }
     }
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+
+    kotlin {
+        jvmToolchain(17)
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+
+    packaging {
+        resources {
+            merges += "META-INF/xposed/*"
+            excludes += "**"
+        }
+    }
+
+    lint {
+        abortOnError = true
+        checkReleaseBuilds = false
+        disable.add("OldTargetApi")
     }
 }
 
 dependencies {
-    compileOnly("androidx.annotation:annotation:1.8.2")
-    compileOnly(files("lib/xposed-api-82.jar"))
+    implementation(libs.libxposed.service)
+    compileOnly(libs.libxposed.api)
 }
+
 
 fun generateVersionCode(): Int {
     val now = LocalDateTime.now(ZoneOffset.UTC)
