@@ -2,7 +2,6 @@
 
 ![GitHub stars](https://img.shields.io/github/stars/rafagale/biometric-bypass?style=social)
 ![GitHub downloads](https://img.shields.io/github/downloads/rafagale/biometric-bypass/total)
-![GitHub Release Downloads](https://img.shields.io/github/downloads/rafagale/biometric-bypass/latest/total)
 ![GitHub Release (latest by date)](https://img.shields.io/github/v/release/rafagale/biometric-bypass)
 
 ## Overview
