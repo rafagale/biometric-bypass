@@ -1,5 +1,10 @@
 # Biometric Bypass Module
 
+![GitHub stars](https://img.shields.io/github/stars/rafagale/biometric-bypass?style=social)
+![GitHub downloads](https://img.shields.io/github/downloads/rafagale/biometric-bypass/total)
+![GitHub Release Downloads](https://img.shields.io/github/downloads/rafagale/biometric-bypass/latest/total)
+![GitHub Release (latest by date)](https://img.shields.io/github/v/release/rafagale/biometric-bypass)
+
 ## Overview
 
 The Biometric Bypass Module is an Xposed module built on LSPosed's Modern Xposed API. It streamlines the face authentication process by automatically bypassing the confirmation step that follows a successful face unlock, providing a seamless, hands-free user experience. This module is optimized for Android 14 and has been rigorously tested on the Pixel 8 Pro (husky) with the August build (ap2a.240805.005).
