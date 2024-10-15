@@ -6,7 +6,7 @@
 
 ## Overview
 
-The Biometric Bypass Module is an Xposed module built on LSPosed's Modern Xposed API. It streamlines the face authentication process by automatically bypassing the confirmation step that follows a successful face unlock, providing a seamless, hands-free user experience. This module is optimized for Android 14 and has been rigorously tested on the Pixel 8 Pro (husky) with the August build (ap2a.240805.005).
+The Biometric Bypass Module is an Xposed module built on LSPosed's Modern Xposed API. It streamlines the face authentication process by automatically bypassing the confirmation step that follows a successful face unlock, providing a seamless, hands-free user experience.
 
 ## How It Works
 
@@ -29,7 +29,9 @@ Below are visual examples comparing the experience with the Biometric Bypass Mod
 ## Compatibility
 
 - **Android Version:** 11 and above
-- **Tested on:** Pixel 8 Pro (husky) with Android 14 (Build: ap2a.240805.005)
+- **Tested on:**
+  - Pixel 8 Pro (husky) with Android 14 (Build: ap2a.240805.005)
+  - Pixel 9 Pro (caiman) with **Android 15** (Build: AP3A.241005.015, Oct 2024)
 
 ## Installation Instructions
 
