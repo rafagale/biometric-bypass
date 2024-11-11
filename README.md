@@ -1,5 +1,7 @@
 # Biometric Bypass Module
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/dfcf1c46fa474099a3aef3f5b3dfe8c3)](https://app.codacy.com/gh/rafagale/biometric-bypass?utm_source=github.com&utm_medium=referral&utm_content=rafagale/biometric-bypass&utm_campaign=Badge_Grade)
+
 ![GitHub stars](https://img.shields.io/github/stars/rafagale/biometric-bypass?style=social)
 ![GitHub downloads](https://img.shields.io/github/downloads/rafagale/biometric-bypass/total)
 ![GitHub Release (latest by date)](https://img.shields.io/github/v/release/rafagale/biometric-bypass)
